@@ -22,6 +22,15 @@ set (CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/CMake/Modules)
 # Include UrhoCommon.cmake module after setting project name
 include (UrhoCommon)
 
+# Find project source files
+file (GLOB SRC_CPP_FILES source/*.cpp)
+file (GLOB SRC_H_FILES source/*.h)
+# Allow extra files (outside of source tree) to be grouped with the project
+define_source_files (GROUP EXTRA_CPP_FILES ${SRC_CPP_FILES} EXTRA_H_FILES ${SRC_H_FILES})
+
+# Find assets when structure under ./bin/ differs
+#define_resource_dirs ()
+
 # Define target name
 set (TARGET_NAME fpbin)
 
