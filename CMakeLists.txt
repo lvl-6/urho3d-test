@@ -1,3 +1,8 @@
+# Set project name
+project (first_project)
+# Define target name
+set (TARGET_NAME fpbin)
+
 # Set CMake minimum version and CMake policies (required by Urho3D)
 cmake_minimum_required (VERSION 3.2.3)
 if (COMMAND cmake_policy)
@@ -13,9 +18,6 @@ if (COMMAND cmake_policy)
 	cmake_policy (SET CMP0063 OLD)
 endif ()
 
-# Set project name
-project (first_project)
-
 # Set CMake modules search path
 set (CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/CMake/Modules)
 
@@ -23,19 +25,13 @@ set (CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/CMake/Modules)
 include (UrhoCommon)
 
 # Find project source files
-file (GLOB SRC_CPP_FILES source/*.cpp)
-file (GLOB SRC_H_FILES source/*.h)
-# Allow extra files (outside of source tree) to be grouped with the project
-define_source_files (GROUP EXTRA_CPP_FILES ${SRC_CPP_FILES} EXTRA_H_FILES ${SRC_H_FILES})
+# Note: this is what define_source_files() does, but that points to project root for source.
+file (GLOB CPP_FILES source/*.cpp)
+file (GLOB H_FILES source/*.h)
+set (SOURCE_FILES ${CPP_FILES} ${H_FILES})
 
 # Find assets when structure under ./bin/ differs
 #define_resource_dirs ()
-
-# Define target name
-set (TARGET_NAME fpbin)
-
-# Define source files
-define_source_files ()
 
 # Setup target with resource copying
 setup_main_executable ()
