@@ -156,7 +156,7 @@ public:
 
 		// Add green spot light to the camera node
 		{
-			Node* node_light = cameraNode_->CreateChild();
+			Node* node_light = cameraNode_->CreateChild("Flashlight");
 			Light* light = node_light->CreateComponent<Light>();
 			node_light->Pitch(15); // point slightly downward
 			light->SetLightType(LIGHT_SPOT);
@@ -273,6 +273,15 @@ public:
 		if(input->GetKeyDown(KEY_D))
 			cameraNode_->Translate(Vector3( 1,0,0) * MOVE_SPEED * timeStep);
 
+		/* DISABLED because I don't know how to work with nodes properly yet.
+		// Turn the flashlight (green light) on/off
+		if(input->GetKeyDown(KEY_F))
+			//Node* flashlight = cameraNode_->GetChild("Flashlight");
+			//Light* light = flashlight->CreateComponent<Light>();
+			light->SetBrightness(0.0f);
+			URHO3D_LOGINFO("F PRESSED!");
+		*/
+
 		if(!GetSubsystem<Input>()->IsMouseVisible())
 		{
 			// Use this frame's mouse motion to adjust camera node yaw and pitch
@@ -302,7 +311,7 @@ public:
 	void HandlePostRenderUpdate(StringHash eventType, VariantMap& eventData)
 	{
 		// Nothing to do here.
-		//scene_->GetComponent<Octree>()->DrawDebugGeometry(true);
+		//scene_->GetComponent<Octree>()->DrawDebugGeometry(true); // Show debug geometry
 	}
 
 	void HandleEndFrame(StringHash eventType, VariantMap& eventData)
