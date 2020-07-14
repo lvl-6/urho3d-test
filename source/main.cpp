@@ -144,7 +144,7 @@ public:
 
 		// Create a blue point light
 		{
-			Node* lightNode = scene_->CreateChild("Light");
+			Node* lightNode = scene_->CreateChild("Blue_Light");
 			lightNode->SetPosition(Vector3(-10, 2, 5));
 			Light* light = lightNode->CreateComponent<Light>();
 			light->SetLightType(LIGHT_POINT);
