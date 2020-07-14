@@ -41,7 +41,7 @@ public:
 	SharedPtr<Node> boxNode_;
 	SharedPtr<Node> cameraNode_;
 
-	// This creates the context (before the engine is initialised), and sets some instance variables.
+	// Constructor creates the context (before the engine is initialised), and initialises some member variables.
 	FirstApp(Context* context) : Application(context),framecount_(0),time_(0)
 	{
 	}
@@ -211,7 +211,7 @@ public:
 
 	void HandleClosePressed(StringHash eventType, VariantMap& eventData)
 	{
-		engine_->Exit();	
+		engine_->Exit();
 	}
 
 	void HandleUpdate(StringHash eventType, VariantMap& eventData)
@@ -273,14 +273,23 @@ public:
 		if(input->GetKeyDown(KEY_D))
 			cameraNode_->Translate(Vector3( 1,0,0) * MOVE_SPEED * timeStep);
 
-		/* DISABLED because I don't know how to work with nodes properly yet.
+		/* WIP */
 		// Turn the flashlight (green light) on/off
 		if(input->GetKeyDown(KEY_F))
-			//Node* flashlight = cameraNode_->GetChild("Flashlight");
-			//Light* light = flashlight->CreateComponent<Light>();
-			light->SetBrightness(0.0f);
-			URHO3D_LOGINFO("F PRESSED!");
-		*/
+		{
+			Node* flashlight = cameraNode_->GetChild("Flashlight");
+			flashlight->SetEnabled( !flashlight->IsEnabled() );
+		//	Light* light = flashlight->GetChild("Flashlight_Light");
+		//	light->SetBrightness(0.0f);
+			/*String s("F PRESSED! ID: " +
+				flashlight->GetID() +
+				" Scene: " +
+				flashlight->GetScene() +
+				" Enabled?: " + 
+				flashlight->IsEnabled()
+				);*/	
+		}
+
 
 		if(!GetSubsystem<Input>()->IsMouseVisible())
 		{
