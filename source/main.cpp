@@ -207,6 +207,12 @@ public:
 		{
 			GetSubsystem<Input>()->SetMouseVisible(!GetSubsystem<Input>()->IsMouseVisible());
 		}
+		// F will toggle flashlight (green light)
+		if (key == KEY_F)
+		{
+			Node* flashlight = cameraNode_->GetChild("Flashlight");
+			flashlight->SetEnabled( !flashlight->IsEnabled() );
+		}
 	}
 
 	void HandleClosePressed(StringHash eventType, VariantMap& eventData)
@@ -272,24 +278,6 @@ public:
 			cameraNode_->Translate(Vector3(-1,0,0) * MOVE_SPEED * timeStep);
 		if(input->GetKeyDown(KEY_D))
 			cameraNode_->Translate(Vector3( 1,0,0) * MOVE_SPEED * timeStep);
-
-		/* WIP */
-		// Turn the flashlight (green light) on/off
-		if(input->GetKeyDown(KEY_F))
-		{
-			Node* flashlight = cameraNode_->GetChild("Flashlight");
-			flashlight->SetEnabled( !flashlight->IsEnabled() );
-		//	Light* light = flashlight->GetChild("Flashlight_Light");
-		//	light->SetBrightness(0.0f);
-			/*String s("F PRESSED! ID: " +
-				flashlight->GetID() +
-				" Scene: " +
-				flashlight->GetScene() +
-				" Enabled?: " + 
-				flashlight->IsEnabled()
-				);*/	
-		}
-
 
 		if(!GetSubsystem<Input>()->IsMouseVisible())
 		{
