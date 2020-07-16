@@ -268,6 +268,7 @@ public:
 		boxNode_->Rotate(Quaternion(8 * timeStep, 16 * timeStep, 0));
 
 		Input* input = GetSubsystem<Input>();
+
 		if(input->GetKeyDown(KEY_SHIFT))
 			MOVE_SPEED *= 10;
 		if(input->GetKeyDown(KEY_W))
