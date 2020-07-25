@@ -1,1 +1,1 @@
-/home/john/code/cloned/urho3d-master/CMake
+/home/john/code/game-engines/urho3d/CMake

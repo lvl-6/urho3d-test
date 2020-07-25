@@ -28,6 +28,7 @@
 #include <Urho3D/Graphics/StaticModel.h>
 #include <Urho3D/Graphics/Material.h>
 #include <Urho3D/Graphics/Skybox.h>
+#include <Urho3D/Physics/PhysicsWorld.h>
 
 using namespace Urho3D;
 
@@ -42,7 +43,8 @@ public:
 	SharedPtr<Node> cameraNode_;
 
 	// Constructor creates the context (before the engine is initialised), and initialises some member variables.
-	FirstApp(Context* context) : Application(context),framecount_(0),time_(0)
+	FirstApp(Context* context) :
+		Application(context),framecount_(0),time_(0)
 	{
 	}
 
@@ -92,6 +94,8 @@ public:
 		scene_ = new Scene(context_);
 		// Give the scene an Octree component
 		scene_->CreateComponent<Octree>();
+		// Create PhysicsWorld component for physics components (i.e. RigidBody, CollisionShape).
+		scene_->CreateComponent<PhysicsWorld>();
 		// Add an additional component (DebugRenderer)
 		scene_->CreateComponent<DebugRenderer>();
 
@@ -179,8 +183,6 @@ public:
 		SubscribeToEvent(E_RENDERUPDATE, URHO3D_HANDLER(FirstApp, HandleRenderUpdate));
 		SubscribeToEvent(E_POSTRENDERUPDATE, URHO3D_HANDLER(FirstApp, HandlePostRenderUpdate));
 		SubscribeToEvent(E_ENDFRAME, URHO3D_HANDLER(FirstApp, HandleEndFrame));
-
-		//SubscribeToEvent(E_KEYDOWN, URHO3D_HANDLER(FirstApp, HandleKeyDown)); //TODO Get rid of this in a minute
 	}
 
 	virtual void Stop()
