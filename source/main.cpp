@@ -37,9 +37,9 @@ class FirstApp : public Application
 public:
 	int framecount_;
 	float time_;
-	SharedPtr<Text> text_;
+//	SharedPtr<Text> text_;
 	SharedPtr<Scene> scene_;
-	SharedPtr<Node> boxNode_;
+//	SharedPtr<Node> boxNode_;
 	SharedPtr<Node> cameraNode_;
 
 	// Constructor creates the context (before the engine is initialised), and initialises some member variables.
@@ -177,7 +177,7 @@ public:
 			}
 			str.append(" fps");
 			String s(str.c_str(), str.size());
-			text_->SetText(s);
+//			text_->SetText(s);
 			URHO3D_LOGINFO(s); // put stuff in the log
 			framecount_ = 0;
 			time_ = 0;
