@@ -69,111 +69,28 @@ public:
 		// Use default Urho3D UI style
 		GetSubsystem<UI>()->GetRoot()->SetDefaultStyle(cache->GetResource<XMLFile>("UI/DefaultStyle.xml"));
 
-		// Create some text (this kinda stuff should probably be scene-specific or something)
-		text_ = new Text(context_);
-		text_->SetText("Keys: tab = toggle mouse, AWSD = move camera, Shift = fast mode, Esc = quit.\n"
-				"Wait a bit to see FPS.");
-		text_->SetFont(cache->GetResource<Font>("Fonts/Anonymous Pro.ttf"), 20);
-		text_->SetColor(Color(0.3, 0, 0.3));
-		text_->SetHorizontalAlignment(HA_CENTER);
-		text_->SetVerticalAlignment(VA_TOP);
-		GetSubsystem<UI>()->GetRoot()->AddChild(text_);
-
-		// Add a button (same note as above BTW)
-		Button* button = new Button(context_);
-		// Button must be part of the UI system before SetSize calls!
-		GetSubsystem<UI>()->GetRoot()->AddChild(button);
-		button->SetName("Button Quit");
-		button->SetStyle("Button");
-		button->SetSize(32, 32);
-		button->SetPosition(16, 116);
-		// Subscribe to button release event
-		SubscribeToEvent(button, E_RELEASED, URHO3D_HANDLER(FirstApp, HandleClosePressed));
-
-		// Setup a scene to render
+		// Setup a scene to render (MESSY SECTION!)
 		scene_ = new Scene(context_);
-		// Give the scene an Octree component
-		scene_->CreateComponent<Octree>();
-		// Create PhysicsWorld component for physics components (i.e. RigidBody, CollisionShape).
-		scene_->CreateComponent<PhysicsWorld>();
-		// Add an additional component (DebugRenderer)
-		scene_->CreateComponent<DebugRenderer>();
-
-		// Add a skybox
-		Node* skyNode = scene_->CreateChild("Sky");
-		skyNode->SetScale(500.0f); // apparently does not matter
-		Skybox* skybox = skyNode->CreateComponent<Skybox>();
-		skybox->SetModel(cache->GetResource<Model>("Models/Box.mdl"));
-		skybox->SetMaterial(cache->GetResource<Material>("Materials/Skybox.xml"));
-
-		// Add a geometrical box
-		boxNode_ = scene_->CreateChild("Box");
-		boxNode_->SetPosition(Vector3(0, 2, 15));
-		boxNode_->SetScale(Vector3(3, 3, 3));
-		StaticModel* boxObject = boxNode_->CreateComponent<StaticModel>();
-		boxObject->SetModel(cache->GetResource<Model>("Models/Box.mdl"));
-		boxObject->SetMaterial(cache->GetResource<Material>("Materials/Stone.xml"));
-		boxObject->SetCastShadows(true);
-
-		// Create 400 similar boxes in a grid
-		for(int x=-30; x<30; x+=3)
-			for(int z=0; z<60; z+=3)
-			{
-				Node* boxNode_ = scene_->CreateChild("Box");
-				boxNode_->SetPosition(Vector3(x, -3, z));
-				boxNode_->SetScale(Vector3(2, 2, 2));
-				StaticModel* boxObject = boxNode_->CreateComponent<StaticModel>();
-				boxObject->SetModel(cache->GetResource<Model>("Models/Box.mdl"));
-				boxObject->SetMaterial(cache->GetResource<Material>("Materials/Stone.xml"));
-				boxObject->SetCastShadows(true);
-			}
-
-		// Create a camera from which the viewpoint can render
-		cameraNode_ = scene_->CreateChild("Camera");
+		SharedPtr<File> sceneFile = GetSubsystem<ResourceCache>()->GetFile("Scenes/TestScene.xml");
+		scene_->LoadXML(*sceneFile);
+		scene_->SetName("MainScene");
+		cameraNode_ = new Node(context_);
 		Camera* camera = cameraNode_->CreateComponent<Camera>();
-		camera->SetFarClip(2000);
+		camera->SetFarClip(300.0f);
+		cameraNode_->SetPosition(Vector3(0.0f, 3.0f, -20.0f));
+		SharedPtr<Viewport> viewport(new Viewport(context_, scene_, cameraNode_->GetComponent<Camera>()));
+		GetSubsystem<Renderer>()->SetViewport(0, viewport);
+//		XMLFile *sceneFile = cache->GetResource<XMLFile>("Scenes/TestScene.xml");
+//		scene_->LoadXML(sceneFile->GetRoot());
 
-		// Create a red directional light (sun)
-		{
-			Node* lightNode = scene_->CreateChild();
-			lightNode->SetDirection(Vector3::FORWARD);
-			lightNode->Yaw(50); // horizontal
-			lightNode->Pitch(10); // vertical
-			Light* light = lightNode->CreateComponent<Light>();
-			light->SetLightType(LIGHT_DIRECTIONAL);
-			light->SetBrightness(1.6);
-			light->SetColor(Color(1.0, 0.6, 0.3, 1));
-			light->SetCastShadows(true);
-		}
+//		GetSubsystem<Renderer>()->SetViewport(0, new Viewport(context_, scene_, Camera));
 
-		// Create a blue point light
-		{
-			Node* lightNode = scene_->CreateChild("Blue_Light");
-			lightNode->SetPosition(Vector3(-10, 2, 5));
-			Light* light = lightNode->CreateComponent<Light>();
-			light->SetLightType(LIGHT_POINT);
-			light->SetRange(25);
-			light->SetBrightness(1.7);
-			light->SetColor(Color(0.5, 0.5, 1.0, 1));
-			light->SetCastShadows(true);
-		}
-
-		// Add green spot light to the camera node
-		{
-			Node* node_light = cameraNode_->CreateChild("Flashlight");
-			Light* light = node_light->CreateComponent<Light>();
-			node_light->Pitch(15); // point slightly downward
-			light->SetLightType(LIGHT_SPOT);
-			light->SetRange(20);
-			light->SetColor(Color(0.6, 1, 0.6, 1.0));
-			light->SetBrightness(2.8);
-			light->SetFov(25);
-		}
-
+/*
 		// Set up the viewport
 		Renderer* renderer = GetSubsystem<Renderer>();
 		SharedPtr<Viewport> viewport(new Viewport(context_, scene_, cameraNode_->GetComponent<Camera>()));
 		renderer->SetViewport(0, viewport);
+*///END OF MESSY SECTION
 
 		// Subscribe to the events we want to handle (in this example, that's most of them)
 		SubscribeToEvent(E_BEGINFRAME, URHO3D_HANDLER(FirstApp, HandleBeginFrame));
@@ -211,9 +128,10 @@ public:
 		}
 		// F will toggle flashlight (green light)
 		if (key == KEY_F)
-		{
+		{	/*
 			Node* flashlight = cameraNode_->GetChild("Flashlight");
 			flashlight->SetEnabled( !flashlight->IsEnabled() );
+			*/
 		}
 	}
 
@@ -265,10 +183,7 @@ public:
 			time_ = 0;
 		}
 
-		// Rotate the box - this would be better done with a LogicComponent,
-		// which makes it easier to control things like movement/animation.
-		boxNode_->Rotate(Quaternion(8 * timeStep, 16 * timeStep, 0));
-
+		/*
 		Input* input = GetSubsystem<Input>();
 
 		if(input->GetKeyDown(KEY_SHIFT))
@@ -295,7 +210,7 @@ public:
 			cameraNode_->SetDirection(Vector3::FORWARD);
 			cameraNode_->Yaw(yaw_);
 			cameraNode_->Pitch(pitch_);
-		}
+		}*/
 	}
 
 	void HandlePostUpdate(StringHash eventType, VariantMap& eventData)
