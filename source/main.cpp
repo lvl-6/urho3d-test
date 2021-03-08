@@ -150,6 +150,7 @@ void FirstApp::LoadScene()
 	SharedPtr<File> sceneFile = GetSubsystem<ResourceCache>()->GetFile("Scenes/TestScene.xml");
 	scene_->LoadXML(*sceneFile);
 	scene_->SetName("MainScene");
+	//TestScene.loadScene(scene_);
 
 	cameraNode_ = new Node(context_);
 	Camera* camera = cameraNode_->CreateComponent<Camera>();

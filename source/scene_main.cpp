@@ -40,6 +40,7 @@ void TestScene::loadScene()
 	scene_->LoadXML(*sceneFile);
 	scene_->SetName("MainScene");
 
+
 	cameraNode_ = new Node(context_);
 	Camera* camera = cameraNode_->CreateComponent<Camera>();
 	camera->SetFarClip(300.0f);
